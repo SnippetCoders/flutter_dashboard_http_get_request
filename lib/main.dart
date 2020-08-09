@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
 
+import 'pages/home_page.dart';
 import 'pages/login_page.dart';
+import 'shared_service.dart';
 
-void main() {
+Widget _defaultHome = new LoginPage();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Set default home.
+
+  // Get result of the login function.
+  bool _result = await SharedService.isLoggedIn();
+  if (_result) {
+    _defaultHome = new HomePage();
+  }
+
   runApp(MyApp());
 }
 
@@ -10,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Image Loader',
+      title: 'Dashboard',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Poppins',
@@ -34,7 +47,12 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: LoginPage(),
+      home: _defaultHome,
+      routes: <String, WidgetBuilder>{
+        // Set routes for using the Navigator.
+        '/home': (BuildContext context) => new HomePage(),
+        '/login': (BuildContext context) => new LoginPage()
+      },
     );
   }
 }
